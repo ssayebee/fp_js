@@ -1,12 +1,12 @@
 var users = [
-  { id: 1, name: 'ID', age: 36},
-  { id: 2, name: 'BJ', age: 32},
-  { id: 3, name: 'JM', age: 32},
-  { id: 4, name: 'PJ', age: 27},
-  { id: 5, name: 'HA', age: 25},
-  { id: 6, name: 'JE', age: 26},
-  { id: 7, name: 'JI', age: 31},
-  { id: 8, name: 'MP', age: 23},
+  { id: 10, name: 'ID', age: 36},
+  { id: 20, name: 'BJ', age: 32},
+  { id: 30, name: 'JM', age: 32},
+  { id: 40, name: 'PJ', age: 27},
+  { id: 50, name: 'HA', age: 25},
+  { id: 60, name: 'JE', age: 26},
+  { id: 70, name: 'JI', age: 31},
+  { id: 80, name: 'MP', age: 23},
 ];
 
 function _curry(fn) {
@@ -93,14 +93,33 @@ function _keys(obj) {
   return _is_obj(obj) ? Object.keys(obj) : [];
 }
 
+// 컬렉션 중심 프로그램의 유형별 함수 만들기
+
+// 1. 수집하기 - map
+//  1. _values
 var _values = _map(_identity);
 function _identity(val) {
   return val;
 }
 
+console.log(_keys(users[0]));
+console.log(_values(users[0]));
+
+
+
+//  2. _plunk
 function _plunk(data, key) {
   return _map(data, _get(key));
 }
+
+console.log(_plunk(users, 'name'));
+console.log(_plunk(users, 'age'));
+console.log(_plunk(users, 'id'));
+
+
+
+// 2. 거르기 _filter
+//  1. _reject
 
 function _negate(fun) {
   return function(val) {
@@ -112,8 +131,23 @@ function _reject(data, predi) {
   return _filter(data, _negate(predi));
 }
 
+console.log(_reject(users, function(user) {
+  return user.age > 30;
+}));
+console.log(_reject(users, function(user) {
+  return user.age <= 30;
+}));
+
+
+
+//  2. _compact
 var _compact = _filter(_identity);
 
+console.log(_compact([1, 2, 0, false, null, {}]));
+
+// 3. 찾아내기 - find
+
+//  1. _find
 var _find = _curryr(function(list, predi) {
   var keys = _keys(list);
   for(var i = 0, len = keys.length; i < len; i++) {
@@ -122,6 +156,7 @@ var _find = _curryr(function(list, predi) {
   }
 });
 
+//  2. _find_index
 var _find_index = _curryr(function(list, predi) {
   var keys = _keys(list);
   for(var i = 0, len = keys.length; i < len; i++) {
@@ -130,10 +165,43 @@ var _find_index = _curryr(function(list, predi) {
   return -1;
 });
 
+_go(
+  users,
+  _find(function(user) { return user.id == 20 }),
+  _get('name'),
+  console.log
+);
+
+_go(
+  users,
+  _find_index(function(user) { return user.id == 20 }),
+  console.log
+);
+
+//  3. _some
 function _some(data, predi) {
   return _find_index(data, predi || _identity) != -1;
 }
 
+//  2. _every
 function _every(data, predi) {
   return _find_index(data, _negate(predi || _identity)) == -1;
 }
+
+console.log(_some([1, 2, 5, 10, 20], function(val) { return val > 10 }));
+console.log(_some([1, 2, 5, 10, 20], function(val) { return val > 20 }));
+
+console.log(_every([1, 2, 5, 10, 20], function(val) { return val > 4 }));
+console.log(_every([4, 6, 8, 12, 20], function(val) { return val > 3 }));
+
+console.log(_some([1, 0, 3, 4]));
+console.log(_some([1, false, 3, 4]));
+console.log(_some([null, undefined, 0]));
+
+console.log(_every([1, 2, 3, 4]));
+console.log(_every([1, false, 3, 4]));
+console.log(_every([null, undefined, 0]));
+
+console.clear();
+
+console.log(_some(users, user => user.age > 20));
