@@ -85,6 +85,27 @@ function _go(arg) {
 
 var _map = _curryr(_map), _filter = _curryr(_filter)
 
+// 6. _each의 외부 다형성 높이기
+  // 1. _each에 null 넣어도 에러 안나게
+_each(null, console.log)
+_go(
+  null,
+  _filter((v) => v % 2),
+  _map((v) => v * v),
+  console.log
+);
+
+  // 2. _keys 만들기
+console.log( Object.keys({ name: 'ID', age: '20'}) );
+console.log( Object.keys([ 1, 2, 3, 4]) );
+console.log( Object.keys(10) );
+// error
+// console.log( Object.keys(null) );
+
+console.clear();
+
+  // 3. keys에서도 _is_obj인지 검사하여 null 에러 안나게
+
 function _is_obj(obj) {
   return typeof obj == 'object' && !!obj;
 }
@@ -92,3 +113,34 @@ function _is_obj(obj) {
 function _keys(obj) {
   return _is_obj(obj) ? Object.keys(obj) : [];
 }
+
+console.log( _keys({ name: 'ID', age: '20'}) );
+console.log( _keys([ 1, 2, 3, 4]) );
+console.log( _keys(10) );
+console.log( _keys(null) );
+
+console.clear();
+
+  // 4. _each 외부 다형성 높이기
+  // _each를 obj의 value로도 가능하게
+
+_each(
+  {13: 'ID', 18: 'PD', 20: 'SY'},
+  function(name) { console.log(name) }
+);
+
+_go(
+  {13: 'ID', 18: 'PD', 20: 'SY'},
+  _map((name) => name.toLowerCase()),
+  console.log
+);
+
+_go(
+  users,
+  _map(_get('name')),
+  _map(name => name.toLowerCase()),
+  console.log
+);
+
+
+// 함수형 프로그래밍은 오류 데이터가 들어와도 그럴듯하게 처리하므로써 다형성을 극대화 시킨다.
