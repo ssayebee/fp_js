@@ -1,12 +1,15 @@
 var users = [
-  { id: 1, name: 'ID', age: 36},
-  { id: 2, name: 'BJ', age: 32},
-  { id: 3, name: 'JM', age: 32},
-  { id: 4, name: 'PJ', age: 27},
-  { id: 5, name: 'HA', age: 25},
-  { id: 6, name: 'JE', age: 26},
-  { id: 7, name: 'JI', age: 31},
-  { id: 8, name: 'MP', age: 23},
+  { id: 10, name: 'ID', age: 36},
+  { id: 20, name: 'BJ', age: 32},
+  { id: 31, name: 'JM', age: 32},
+  { id: 44, name: 'PJ', age: 27},
+  { id: 50, name: 'HA', age: 25},
+  { id: 62, name: 'JE', age: 26},
+  { id: 72, name: 'JI', age: 31},
+  { id: 80, name: 'MP', age: 16},
+  { id: 81, name: 'SP', age: 17},
+  { id: 90, name: 'ND', age: 26},
+  { id: 93, name: 'MS', age: 31},
 ];
 
 function _curry(fn) {
@@ -31,8 +34,8 @@ function _filter(list, predi) {
 
 function _map(list, mapper) {
   var new_list = [];
-  _each(list, function(val){
-    new_list.push(mapper(val));
+  _each(list, function(val, key){
+    new_list.push(mapper(val, key));
   });
   return new_list;
 }
@@ -47,7 +50,7 @@ var _length = _get('length');
 function _each(list, iter) {
   var keys = _keys(list)
   for(var i = 0, len = keys.length; i < len; i++) {
-    iter(list[keys[i]]);
+    iter(list[keys[i]], keys[i]);
   }
   return list;
 };
@@ -137,3 +140,54 @@ function _some(data, predi) {
 function _every(data, predi) {
   return _find_index(data, _negate(predi || _identity)) == -1;
 }
+
+function _min(data) {
+  return _reduce(data, function(a, b) {
+    return a < b ? a : b;
+  });
+}
+
+function _max(data) {
+  return _reduce(data, function(a, b) {
+    return a > b ? a : b;
+  });
+}
+
+var _min_by = _curryr(function(data, iter) {
+  return _reduce(data, function(a, b) {
+    return iter(a) < iter(b) ? a : b; });
+});
+
+var _max_by = _curryr(function(data, iter) {
+  return _reduce(data, function(a, b) {
+    return iter(a) > iter(b) ? a : b;
+  });
+});
+
+function _head(list) {
+  return list[0];
+}
+
+function _push(obj, key, val) {
+  (obj[key] = obj[key] || []).push(val);
+  return obj;
+}
+
+var _group_by = _curryr(function(data, iter){
+  return _reduce(data, function(grouped, val) {
+    return _push(grouped, iter(val), val);
+  }, {});
+});
+
+function _inc(obj, key) {
+  obj[key] ? obj[key]++ : obj[key] = 1
+  return obj;
+}
+
+var _count_by = _curryr(function(data, iter) {
+  return _reduce(data, function(count, val) {
+    return _inc(count, iter(val))
+  }, {});
+});
+
+var _pairs = _map((val, key) => [key, val]);
