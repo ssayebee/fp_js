@@ -110,14 +110,14 @@ console.log(_values(users[0]));
 
 
 
-//  2. _plunk
-function _plunk(data, key) {
+//  2. _pluck
+function _pluck(data, key) {
   return _map(data, _get(key));
 }
 
-console.log(_plunk(users, 'name'));
-console.log(_plunk(users, 'age'));
-console.log(_plunk(users, 'id'));
+console.log(_pluck(users, 'name'));
+console.log(_pluck(users, 'age'));
+console.log(_pluck(users, 'id'));
 
 
 

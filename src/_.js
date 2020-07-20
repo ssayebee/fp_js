@@ -101,7 +101,7 @@ function _identity(val) {
   return val;
 }
 
-function _plunk(data, key) {
+function _pluck(data, key) {
   return _map(data, _get(key));
 }
 
