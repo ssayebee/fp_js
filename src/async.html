@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>비동기</title>
+  <script src="_.js"></script>
+  <script src="partial.js"></script>
+</head>
+<body>
+  
+<script>
+
+  function square(a) {
+    return new Promise(function(resolve) {
+      setTimeout(function() {
+        resolve(a * a);
+      }, 500);
+    });
+  }
+
+  /*
+  function square(a) {
+    return a * a;
+  }
+
+  // Promise가 아닌 경우 error 발생
+  square(10)
+    .then(square)
+    .then(square)
+    .then(square)
+    .then(console.log)
+  */
+
+  /* go를 쓰면 Promise가 아니라고 error가 발생하지 않음
+  _.go(square(10),
+    square,
+    square,
+    square,
+    console.log
+  )
+  */
+
+  var list = [1, 2, 3, 4];
+
+  new Promise(function(resolve) {
+    (function recur(res) {
+      if (list.length == res.length) return resolve(res);
+      square(list[res.length]).then(function(val) {
+        res.push(val);
+        recur(res);
+      });
+    })([]);
+  }).then(console.log);
+
+  _.go(
+    list,
+    _.map(square),
+    _.map(square),
+    _.map(square),
+    console.log
+  );
+
+</script>
+</body>
+</html>
