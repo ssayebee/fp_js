@@ -5,7 +5,12 @@ on:
     types: [opened]
 
 jobs:
-  log_context:
+  printJob:
+    name: Print event
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.event }} | jq
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
