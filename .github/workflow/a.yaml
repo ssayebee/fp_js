@@ -1,0 +1,9 @@
+name: Create jira issue from github issue
+
+on:
+  issues:
+    types: [opened]
+
+steps:
+  name: log github issues
+  run: echo ${{ github.event }}
