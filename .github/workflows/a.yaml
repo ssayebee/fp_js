@@ -3,4 +3,9 @@ name: Create jira issue from github issue
 on:
   issues:
     types: [opened]
-    run: echo ${{ github.event }}
+    
+jobs:
+  log_context:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event }}
